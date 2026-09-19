@@ -10,8 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -35,6 +36,15 @@ public class PlacementService {
 
     @Value("${parcelpulse.upload-dir:./uploads}")
     private String uploadDir;
+
+    @Value("${cloudinary.cloud_name}")
+    private String cloudName;
+
+    @Value("${cloudinary.api_key}")
+    private String apiKey;
+
+    @Value("${cloudinary.api_secret}")
+    private String apiSecret;
 
     @Transactional
     public Placement startPlacement(Long stickerId, Long riderId, MultipartFile photo,
@@ -128,21 +138,40 @@ public class PlacementService {
         Map<String, Object> evidence = new HashMap<>();
         evidence.put("placement", placement);
         evidence.put("sticker", sticker);
-        evidence.put("startPhotoUrl", "/uploads/" + placement.getStartPhotoPath());
-        evidence.put("endPhotoUrl", placement.getEndPhotoPath() != null ? "/uploads/" + placement.getEndPhotoPath() : null);
+        evidence.put("startPhotoUrl", formatPhotoUrl(placement.getStartPhotoPath()));
+        evidence.put("endPhotoUrl", placement.getEndPhotoPath() != null ? formatPhotoUrl(placement.getEndPhotoPath()) : null);
         return evidence;
     }
 
-    private String savePhoto(MultipartFile file, String prefix) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+    private String formatPhotoUrl(String path) {
+        if (path == null) return null;
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+            return path;
         }
+        return "/uploads/" + path;
+    }
 
-        String filename = prefix + "_" + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        Path filePath = uploadPath.resolve(filename);
-        Files.write(filePath, file.getBytes());
-        return filename;
+    private String savePhoto(MultipartFile file, String prefix) throws IOException {
+        if ("demo".equals(cloudName) || cloudName == null || cloudName.isEmpty()) {
+            // Fallback to local storage if Cloudinary is not configured
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            String filename = prefix + "_" + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            Path filePath = uploadPath.resolve(filename);
+            Files.write(filePath, file.getBytes());
+            return filename;
+        } else {
+            // Upload to Cloudinary
+            Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                    "cloud_name", cloudName,
+                    "api_key", apiKey,
+                    "api_secret", apiSecret,
+                    "secure", true));
+            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+            return (String) uploadResult.get("secure_url");
+        }
     }
 
     private String computeHash(byte[] data) {

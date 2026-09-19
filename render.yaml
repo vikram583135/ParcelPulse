@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: parcelpulse-api
+    env: java
+    rootDir: backend
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/parcelpulse-backend-1.0.0.jar
+    envVars:
+      - key: DB_URL
+        fromDatabase:
+          name: parcelpulse-db
+          property: connectionString
+      - key: DB_USER
+        fromDatabase:
+          name: parcelpulse-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: parcelpulse-db
+          property: password
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  - type: psql
+    name: parcelpulse-db
+    plan: free
