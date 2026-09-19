@@ -25,6 +25,6 @@ services:
       - key: CLOUDINARY_API_SECRET
         sync: false
 
-  - type: psql
-    name: parcelpulse-db
+databases:
+  - name: parcelpulse-db
     plan: free
