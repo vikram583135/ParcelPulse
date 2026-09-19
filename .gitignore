@@ -1,0 +1,22 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.DS_Store
+
+# Backend
+backend/target/
+backend/maven.zip
+backend/apache-maven-3.9.6/
+backend/maven-wrapper.jar
+backend/.mvn/
+backend/*.iml
+backend/.idea/
+backend/.settings/
+backend/.classpath
+backend/.project
+
+# General
+.DS_Store
+uploads/
+*.log
