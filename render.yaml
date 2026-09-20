@@ -3,7 +3,6 @@ services:
     name: parcelpulse-api
     env: docker
     rootDir: backend
-    dockerfilePath: backend/Dockerfile
     envVars:
       - key: DB_URL
         sync: false
