@@ -799,4 +799,4 @@ npm run dev
 GPS + Photo + Time evidence pipeline, is the subject of pending patent
 applications.*
 
-*For inquiries: [your-email@parcelpulse.in]*
+*For inquiries: [vikram583135@gmail.com]*
