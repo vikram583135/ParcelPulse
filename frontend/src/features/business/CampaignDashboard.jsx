@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 ParcelPulse. All Rights Reserved.
+ * PROPRIETARY AND CONFIDENTIAL. Unauthorized copying, modification,
+ * distribution, or use of this software is strictly prohibited.
+ * See LICENSE file for details.
+ */
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { getCampaignDashboard, getCampaignsByAdvertiser } from '../../api/client'

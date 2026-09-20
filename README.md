@@ -1,6 +1,14 @@
 # ParcelPulse — Verified Advertising on Delivery Packages
 
+> ⚠️ **CONFIDENTIAL & PROPRIETARY** — This repository contains trade secrets and proprietary intellectual property of ParcelPulse. Unauthorized access, copying, distribution, or use of any part of this codebase is strictly prohibited and may result in legal action. See [LICENSE](./LICENSE) for details.
+
+---
+
 > Turn delivery packages into measurable advertising inventory. Businesses pay for verified placements, riders earn for participating, and our verification system provides evidence that the advertisement was actually placed and remained visible through the delivery.
+
+**Copyright © 2026 ParcelPulse. All Rights Reserved.**
+
+---
 
 ## Quick Start
 
@@ -21,7 +29,7 @@ psql -U postgres -c "CREATE DATABASE parcelpulse;"
 cd backend
 mvn spring-boot:run
 ```
-Backend runs on **http://localhost:8080**
+The API starts at `http://localhost:8081/api`
 
 ### 3. Start Frontend
 ```bash
@@ -29,34 +37,30 @@ cd frontend
 npm install
 npm run dev
 ```
-Frontend runs on **http://localhost:5173**
+Open `http://localhost:5173` in your browser.
 
-### 4. Login
-Use the **Quick Demo Access** buttons on the login page:
+## Demo Accounts (Auto-seeded)
+
 | Role | Email | Password |
 |------|-------|----------|
-| Advertiser | nike@demo.com | demo123 |
-| Agent | ravi@demo.com | demo123 |
-| Rider | arun@demo.com | demo123 |
 | Admin | admin@parcelpulse.com | admin123 |
+| Business | business@parcelpulse.com | business123 |
+| Agent | agent@parcelpulse.com | agent123 |
+| Rider | rider@parcelpulse.com | rider123 |
 
 ## Architecture
-- **Backend**: Spring Boot 3.3 modular monolith (Java 17)
-- **Frontend**: React 19 + Vite + React Router v7
-- **Database**: PostgreSQL (auto-created tables via Hibernate)
-- **Design**: Classic warm-toned theme (Swiggy/Zomato inspired)
 
-## The 4 Portals
-1. **Business Portal** — Create campaigns, pay, view results
-2. **Agent Portal** — Receive stickers, assign to riders
-3. **Rider App** — Place stickers, take START/END photos, earn rewards
-4. **Admin Console** — Manage everything, verify placements, view analytics
+- **Backend**: Spring Boot 3.3 / Java 17 (REST API)
+- **Frontend**: React 19 + Vite (SPA)
+- **Database**: PostgreSQL
+- **Image Storage**: Cloudinary (production) / Local filesystem (dev)
 
-## Demo Flow
-1. Login as **Advertiser** → Create "Nike Summer Sprint" campaign → Activate
-2. Login as **Admin** → Generate stickers → Issue to Agent
-3. Login as **Agent** → Assign stickers to Rider
-4. Login as **Rider** → Select sticker → START photo → Deliver → END photo → Submit
-5. Verification runs automatically → ₹10 reward credited
-6. Login as **Advertiser** → View campaign dashboard with results
-7. Login as **Admin** → Review flagged placements → Approve/Reject
+## Legal
+
+This software is proprietary. See [LICENSE](./LICENSE) for full terms.
+
+**Patent Pending**: The verified advertising placement system, including the
+GPS + Photo + Time evidence pipeline, is the subject of pending patent
+applications.
+
+© 2026 ParcelPulse. All Rights Reserved. Unauthorized use is prohibited.

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 ParcelPulse. All Rights Reserved.
+ * PROPRIETARY AND CONFIDENTIAL. Unauthorized copying, modification,
+ * distribution, or use of this software is strictly prohibited.
+ * See LICENSE file for details.
+ */
 import { Routes, Route, NavLink } from 'react-router-dom'
 import { LayoutDashboard, Megaphone, Package, Users, Shield, FileText, LogOut } from 'lucide-react'
 import Dashboard from './Dashboard'
