@@ -19,6 +19,7 @@ public class CreateCampaignRequest {
     private Integer targetPlacements;
     private BigDecimal budget;
     private String paymentType; // FULL or PARTIAL
+    private String campaignMode; // PLACEMENTS or BUDGET
     private String startDate;
     private String endDate;
 }

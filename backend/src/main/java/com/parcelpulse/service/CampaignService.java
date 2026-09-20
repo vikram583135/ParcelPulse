@@ -44,17 +44,34 @@ public class CampaignService {
     @Value("${parcelpulse.reward.completion-bonus:50.00}")
     private BigDecimal completionBonus;
 
+    // Platform rate charged to advertisers per placement
+    private static final BigDecimal RATE_PER_PLACEMENT = new BigDecimal("50.00");
+
     public Campaign createCampaign(CreateCampaignRequest request) {
         PaymentType paymentType = PaymentType.valueOf(request.getPaymentType().toUpperCase());
 
+        // Auto-calculate budget or placements based on mode
+        String mode = request.getCampaignMode(); // "PLACEMENTS" or "BUDGET"
+        Integer targetPlacements = request.getTargetPlacements();
+        BigDecimal budget = request.getBudget();
+
+        if ("PLACEMENTS".equalsIgnoreCase(mode)) {
+            // Advertiser chose number of placements → we calculate budget
+            budget = RATE_PER_PLACEMENT.multiply(BigDecimal.valueOf(targetPlacements));
+        } else {
+            // Advertiser chose budget → we calculate number of placements
+            targetPlacements = budget.divide(RATE_PER_PLACEMENT, 0, RoundingMode.DOWN).intValue();
+            if (targetPlacements < 1) targetPlacements = 1;
+        }
+
         BigDecimal discount = BigDecimal.ZERO;
-        BigDecimal amountPaid = request.getBudget();
+        BigDecimal amountPaid = budget;
 
         if (paymentType == PaymentType.FULL) {
-            discount = request.getBudget()
+            discount = budget
                     .multiply(BigDecimal.valueOf(fullPaymentDiscountPercent))
                     .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-            amountPaid = request.getBudget().subtract(discount);
+            amountPaid = budget.subtract(discount);
         }
 
         Campaign campaign = Campaign.builder()
@@ -63,8 +80,8 @@ public class CampaignService {
                 .brandName(request.getBrandName())
                 .adDescription(request.getAdDescription())
                 .targetArea(request.getTargetArea())
-                .targetPlacements(request.getTargetPlacements())
-                .budget(request.getBudget())
+                .targetPlacements(targetPlacements)
+                .budget(budget)
                 .paymentType(paymentType)
                 .amountPaid(amountPaid)
                 .discountApplied(discount)
@@ -77,7 +94,7 @@ public class CampaignService {
 
         campaign = campaignRepository.save(campaign);
         auditService.log("CAMPAIGN", campaign.getId(), "CREATED", "Advertiser#" + request.getAdvertiserId(),
-                "Campaign '" + campaign.getName() + "' created with budget ₹" + campaign.getBudget());
+                "Campaign '" + campaign.getName() + "' created — " + targetPlacements + " placements, budget ₹" + budget);
         return campaign;
     }
 
